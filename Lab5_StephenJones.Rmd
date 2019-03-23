@@ -1,0 +1,157 @@
+---
+title: 'Inference for numerical data'
+output:
+  html_document:
+    css: ./lab.css
+    highlight: pygments
+    theme: cerulean
+  pdf_document: default
+---
+<style>
+h3{
+font-weight:bold
+}
+</style>  
+
+1. What are the cases in this data set? How many cases are there in our sample?  
+
+```{r message=FALSE,message=FALSE}
+
+options(tinytex.verbose = TRUE)
+
+load("more/nc.RData")
+numrows<-nrow(nc)
+
+```  
+
+<b>Each case (or row) in the dataset offers data on an individual newborn. There are `r numrows` in the dataset.</b>  
+
+
+2. Make a side-by-side boxplot of `habit` and `weight`. What does the plot 
+highlight about the relationship between these two variables?  
+
+<b>The plot below shows that the mean weight of newborns born to smoking mothers is lower than nonsmoking mothers.  
+
+```{r message=FALSE,message=FALSE}
+
+boxplot(data=nc,weight~habit,
+main = "weight vs habit",
+at = c(1,2),
+names = c("nonsmoker","smoker"),
+las = 2,
+col = c("orange","red"),
+border = "brown",
+horizontal = TRUE
+)
+
+```  
+
+3. Check if the conditions necessary for inference are satisfied. Note that 
+you will need to obtain sample sizes to check the conditions. You can compute 
+the group size using the same `by` command above but replacing `mean` with 
+`length`.  
+
+```{r warning=FALSE,message=FALSE}
+by(nc$weight, nc$habit, length)
+```  
+
+<b>Each group is greater than 30 observations, so the conditions are met for inference.<b>  
+
+4. Write the hypotheses for testing if the average weights of babies born to 
+smoking and non-smoking mothers are different.  
+
+<b>$H_0$: no significant difference exists in the mean weights  
+$H_A$: a significant difference exists in the mean weights</b>  
+
+5. Change the `type` argument to `"ci"` to construct and record a confidence 
+interval for the difference between the weights of babies born to smoking and 
+non-smoking mothers.  
+
+```{r warning=FALSE,message=FALSE}
+inference(y = nc$weight, x = nc$habit, est = "mean", type = "ci", null = 0, 
+          alternative = "twosided", method = "theoretical")
+```  
+
+<The resulting confidence interval is (0.0534, 0.5777), meaning that 95% of random samples will have as a statistical characteristic a mean group difference between .0534 and .5777; because the interval does not include zero, we reject the null hypothesis and accept the alternative adn assert that there is a significant difference in the means between the two groups.</b>  
+
+## On your own
+
+###1.  
+Calculate a 95% confidence interval for the average length of pregnancies 
+(`weeks`) and interpret it in context. Note that since you're doing inference 
+on a single population parameter, there is no explanatory variable, so you can 
+omit the `x` variable from the function.  
+
+```{r message=FALSE, warning=FALSE}
+inference(y = nc$weeks, est = "mean", type = "ci", null = 0, 
+          alternative = "twosided", method = "theoretical")
+```  
+
+<b>We can affirm that 95% of random samples would indicate a mean gestation period between 38.1528 and 38.5165 weeks.</b>  
+
+###2.  
+Calculate a new confidence interval for the same parameter at the 90% 
+confidence level. You can change the confidence level by adding a new argument 
+to the function: `conflevel = 0.90`.  
+
+```{r message=FALSE, warning=FALSE}
+inference(y = nc$weeks, est = "mean", type = "ci", null = 0, 
+          alternative = "twosided", method = "theoretical", conflevel = 0.90)
+```  
+
+<b>We can affirm that 90% of random samples would indicate a mean gestation period between 38.182 and 38.4873 weeks.</b>  
+
+###3.  
+Conduct a hypothesis test evaluating whether the average weight gained by 
+younger mothers is different than the average weight gained by mature mothers.  
+
+<b>$H_0$: no significant difference exists in the mean weight gains  
+$H_A$: a significant difference exists in the mean weight gains</b>  
+
+```{r message=FALSE,warning=FALSE}
+inference(y = nc$gained, x = nc$mature, est = "mean", type = "ci", null = 0, 
+          alternative = "twosided", method = "theoretical")
+```  
+
+<b>The resulting confidence interval is (-4.2896, 0.7502), meaning that 95% of random samples will have as a statistical characteristic a mean group difference between -4.2896 and 0.7502; because the interval includes zero, we accept the null hypothesis and reject the alternative, and assert that there is no significant difference in the mean weight gain between the two groups.</b>  
+
+###4.  
+Now, a non-inference task: Determine the age cutoff for younger and mature 
+mothers. Use a method of your choice, and explain how your method works.  
+
+
+<b>Let's use the command introduced earlier in this lab.</b>  
+
+```{r warning=FALSE,message=FALSE}
+by(nc$mage, nc$mature, max)
+```  
+
+<b>The maximum age of "younger" moms is 34; the maximum age of "mature" moms is 50; this implies younger moms are 34 and younger, while mature moms are 35 and older.</b>  
+
+###5.  
+Pick a pair of numerical and categorical variables and come up with a 
+research question evaluating the relationship between these variables. 
+Formulate the question in a way that it can be answered using a hypothesis test
+and/or a confidence interval. Answer your question using the `inference` 
+function, report the statistical results, and also provide an explanation in 
+plain language.  
+
+<b>Is there a significant relationship between weight gain and birth sex?  
+
+<b>$H_0$: no significant difference exists in the mean weight gain  
+$H_A$: a significant difference exists in the mean weight gain</b>  
+
+```{r message=FALSE,warning=FALSE}
+inference(y = nc$gained, x = nc$gender, est = "mean", type = "ci", null = 0, 
+          alternative = "twosided", method = "theoretical")
+```  
+
+<b>The resulting confidence interval is (-2.8171, 0.7617), meaning that 95% of random samples will have as a statistical characteristic a mean group difference between -2.8171 and 0.7617; because the interval includes zero, we accept the null hypothesis and reject the alternative, and assert that there is no significant difference in the mean weight gain between the two groups.</b>  
+
+
+
+
+
+
+
+
