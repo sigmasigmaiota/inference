@@ -1,11 +1,13 @@
 ---
-title: 'Inference for numerical data'
+title: 'Lab 5: Inference for numerical data'
+author: "Stephen Jones"
+date: "March 23, 2019"
 output:
+  pdf_document: default
   html_document:
     css: ./lab.css
     highlight: pygments
     theme: cerulean
-  pdf_document: default
 ---
 <style>
 h3{
